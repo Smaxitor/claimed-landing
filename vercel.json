@@ -1,0 +1,10 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "installCommand": "npm install",
+  "env": {
+    "RESEND_API_KEY": "@resend_api_key",
+    "RESEND_AUDIENCE_ID": "@resend_audience_id"
+  }
+}
