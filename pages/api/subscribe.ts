@@ -21,6 +21,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       unsubscribed: false,
     });
 
+    await resend.emails.send({
+      from: "Claimed <onboarding@resend.dev>",
+      to: email,
+      subject: "Vous êtes sur la liste Claimed 🎉",
+      text: `Bonjour,
+
+Merci de rejoindre Claimed. Vous serez parmi les premiers à découvrir comment récupérer l'argent que votre carte bancaire vous doit.
+
+On revient vers vous très bientôt.
+
+L'équipe Claimed`,
+    });
+
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error("Resend error:", error);
