@@ -152,7 +152,7 @@ async function seed() {
 
   const { data, error } = await supabase
     .from('notices')
-    .upsert(notices, { onConflict: 'banque,carte,sinistre' })
+    .insert(notices)
 
   if (error) {
     console.error('Erreur Supabase :', error.message)
