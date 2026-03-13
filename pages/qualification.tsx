@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import { Inter } from "next/font/google";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -100,6 +101,7 @@ function ChoiceButton({
 // ── Main component ───────────────────────────────────────────────────────────
 
 export default function Qualification() {
+  const router = useRouter();
   const [sessionId] = useState(() => generateSessionId());
   const [step, setStep] = useState(1);
 
@@ -109,8 +111,6 @@ export default function Qualification() {
   const [carte, setCarte] = useState("");
   const [date, setDate] = useState("");
   const [montant, setMontant] = useState("");
-
-  const [done, setDone] = useState(false);
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -147,7 +147,11 @@ export default function Qualification() {
     if (step < TOTAL_STEPS) {
       setStep((s) => s + 1);
     } else {
-      setDone(true);
+      sessionStorage.setItem(
+        "claimed_qualification",
+        JSON.stringify({ sinistre, banque, carte, date, montant })
+      );
+      router.push("/resultat");
     }
   }
 
@@ -174,24 +178,7 @@ export default function Qualification() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
 
-          {done ? (
-            /* ── Success state ── */
-            <div className="text-center">
-              <div className="text-4xl mb-6">✓</div>
-              <h2 className="text-2xl font-bold mb-3">Dossier enregistré</h2>
-              <p className="text-[#666] font-light text-sm leading-relaxed mb-8">
-                Merci pour ces informations. Notre équipe analyse votre dossier
-                et revient vers vous très prochainement.
-              </p>
-              <a
-                href="/"
-                className="inline-block rounded-lg bg-[#0A0A0A] px-6 py-3 text-sm font-medium text-white hover:bg-[#222] transition-colors"
-              >
-                Retour à l&apos;accueil
-              </a>
-            </div>
-          ) : (
-            <>
+          <>
               {/* Progress bar */}
               <div className="mb-10">
                 <div className="flex justify-between items-center mb-2">
@@ -350,11 +337,10 @@ export default function Qualification() {
                   disabled={!canProceed()}
                   className="flex-1 rounded-lg bg-[#0A0A0A] px-5 py-3 text-sm font-medium text-white hover:bg-[#222] transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  {step === TOTAL_STEPS ? "Envoyer mon dossier" : "Suivant →"}
+                  {step === TOTAL_STEPS ? "Voir mes garanties →" : "Suivant →"}
                 </button>
               </div>
             </>
-          )}
         </div>
       </main>
     </div>

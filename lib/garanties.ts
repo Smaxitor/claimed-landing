@@ -18,7 +18,7 @@ export type Garantie = {
   contact_tel: string;
   contact_web: string;
   assureur: string;
-  documents: string[];       // pièces justificatives à fournir
+  documents: string[];
 };
 
 export type DatabaseGaranties = {
@@ -29,14 +29,42 @@ export type DatabaseGaranties = {
   };
 };
 
+// ── Documents par type de sinistre ────────────────────────────────────────────
+
+const DOCUMENTS: Record<TypeSinistre, string[]> = {
+  annulation_voyage: [
+    "Certificat médical",
+    "Facture voyage",
+    "Justificatif paiement par carte",
+    "Conditions générales de vente du voyagiste",
+  ],
+  retard_vol_bagages: [
+    "Attestation de retard compagnie aérienne",
+    "Factures achats de première nécessité",
+    "Ticket d'enregistrement des bagages",
+    "Justificatif paiement par carte",
+  ],
+  vol_perte_bagages: [
+    "Attestation perte/vol compagnie aérienne",
+    "Liste inventaire des effets perdus",
+    "Justificatif indemnisation compagnie",
+    "Justificatif paiement par carte",
+  ],
+  neige_montagne: [
+    "Certificat médical avec durée d'incapacité",
+    "Facture forfait ski / cours",
+    "Justificatif paiement par carte",
+    "Rapport de police ou secours si applicable",
+  ],
+};
+
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
-/** Garantie placeholder pour les notices non encore analysées */
 function nonAnalysee(): Garantie {
   return {
     plafond: 0,
     franchise: 0,
-    conditions: "Notice non encore analysée",
+    conditions: "Notice en cours d'intégration",
     delai_declaration: 0,
     contact_tel: "",
     contact_web: "",
@@ -45,7 +73,6 @@ function nonAnalysee(): Garantie {
   };
 }
 
-/** Génère les quatre sinistres avec une garantie placeholder */
 function tousNonAnalyses(): Record<TypeSinistre, Garantie> {
   return {
     annulation_voyage: nonAnalysee(),
@@ -69,13 +96,8 @@ export const garanties: DatabaseGaranties = {
         delai_declaration: 15,
         contact_tel: "+33 5 55 42 51 55",
         contact_web: "labanquepostale-assurancescartes.fr",
-        assureur: "La Banque Postale Assurances",
-        documents: [
-          "Relevé de carte prouvant le paiement du voyage",
-          "Justificatif de l'annulation (certificat médical, avis de décès, etc.)",
-          "Facture de l'agence ou du prestataire",
-          "Justificatif des sommes non remboursées",
-        ],
+        assureur: "CNP/Europ Assistance",
+        documents: DOCUMENTS.annulation_voyage,
       },
       retard_vol_bagages: {
         plafond: 400,
@@ -84,28 +106,18 @@ export const garanties: DatabaseGaranties = {
         delai_declaration: 15,
         contact_tel: "+33 5 55 42 51 55",
         contact_web: "labanquepostale-assurancescartes.fr",
-        assureur: "La Banque Postale Assurances",
-        documents: [
-          "Carte d'embarquement",
-          "Billet d'avion payé par la carte",
-          "Attestation de retard émise par la compagnie aérienne",
-          "Justificatifs des achats de première nécessité",
-        ],
+        assureur: "CNP/Europ Assistance",
+        documents: DOCUMENTS.retard_vol_bagages,
       },
       vol_perte_bagages: {
         plafond: 800,
-        franchise: 0,
+        franchise: 70,
         conditions: "Le billet de transport doit avoir été réglé avec la carte.",
         delai_declaration: 15,
         contact_tel: "+33 5 55 42 51 55",
         contact_web: "labanquepostale-assurancescartes.fr",
-        assureur: "La Banque Postale Assurances",
-        documents: [
-          "Billet de transport payé par la carte",
-          "Déclaration de vol ou perte auprès du transporteur (PIR)",
-          "Liste des biens perdus ou volés avec estimation",
-          "Dépôt de plainte si vol avéré",
-        ],
+        assureur: "CNP/Europ Assistance",
+        documents: DOCUMENTS.vol_perte_bagages,
       },
       neige_montagne: {
         plafond: 2300,
@@ -114,13 +126,8 @@ export const garanties: DatabaseGaranties = {
         delai_declaration: 15,
         contact_tel: "+33 5 55 42 51 55",
         contact_web: "labanquepostale-assurancescartes.fr",
-        assureur: "La Banque Postale Assurances",
-        documents: [
-          "Justificatif de paiement du forfait ou hébergement par la carte",
-          "Rapport médical ou certificat d'accident",
-          "Factures des frais engagés (secours, hospitalisation, rapatriement)",
-          "Justificatif de résidence sur place",
-        ],
+        assureur: "CNP/Europ Assistance",
+        documents: DOCUMENTS.neige_montagne,
       },
     },
   },
@@ -135,13 +142,8 @@ export const garanties: DatabaseGaranties = {
         delai_declaration: 15,
         contact_tel: "04 86 91 01 20",
         contact_web: "visa-assurances.fr",
-        assureur: "Chubb European Group",
-        documents: [
-          "Relevé de carte prouvant le paiement",
-          "Justificatif de l'annulation (médical, légal, etc.)",
-          "Contrat de voyage ou bon de réservation",
-          "Justificatif des frais non remboursés",
-        ],
+        assureur: "Inter Partner Assistance",
+        documents: DOCUMENTS.annulation_voyage,
       },
       retard_vol_bagages: {
         plafond: 400,
@@ -150,13 +152,8 @@ export const garanties: DatabaseGaranties = {
         delai_declaration: 15,
         contact_tel: "04 86 91 01 20",
         contact_web: "visa-assurances.fr",
-        assureur: "Chubb European Group",
-        documents: [
-          "Billet d'avion payé par la carte",
-          "Carte d'embarquement",
-          "Attestation officielle de retard de la compagnie aérienne",
-          "Factures des achats de dépannage",
-        ],
+        assureur: "Inter Partner Assistance",
+        documents: DOCUMENTS.retard_vol_bagages,
       },
       vol_perte_bagages: {
         plafond: 800,
@@ -165,13 +162,8 @@ export const garanties: DatabaseGaranties = {
         delai_declaration: 15,
         contact_tel: "04 86 91 01 20",
         contact_web: "visa-assurances.fr",
-        assureur: "Chubb European Group",
-        documents: [
-          "Titre de transport payé par la carte",
-          "Rapport de sinistre du transporteur (PIR)",
-          "Inventaire détaillé des biens perdus ou volés",
-          "Dépôt de plainte (en cas de vol)",
-        ],
+        assureur: "Inter Partner Assistance",
+        documents: DOCUMENTS.vol_perte_bagages,
       },
       neige_montagne: {
         plafond: 2300,
@@ -180,61 +172,77 @@ export const garanties: DatabaseGaranties = {
         delai_declaration: 15,
         contact_tel: "04 86 91 01 20",
         contact_web: "visa-assurances.fr",
-        assureur: "Chubb European Group",
-        documents: [
-          "Justificatif de paiement par la carte",
-          "Rapport d'accident ou certificat médical",
-          "Factures de secours, transport ou hospitalisation",
-          "Justificatif de séjour à la montagne",
-        ],
+        assureur: "Inter Partner Assistance",
+        documents: DOCUMENTS.neige_montagne,
       },
     },
   },
 
-  // ── BNP Paribas — notices non encore analysées ────────────────────────────
+  // ── BNP Paribas — notices non encore intégrées ────────────────────────────
   "BNP Paribas": {
     "Visa Classic / Bleue": tousNonAnalyses(),
     "Visa Premier": tousNonAnalyses(),
     "Mastercard Gold": tousNonAnalyses(),
   },
 
-  // ── Crédit Agricole — notices non encore analysées ────────────────────────
+  // ── Crédit Agricole — notices non encore intégrées ────────────────────────
   "Crédit Agricole": {
     "Visa Classic / Bleue": tousNonAnalyses(),
     "Visa Premier": tousNonAnalyses(),
     "Mastercard Gold": tousNonAnalyses(),
   },
 
-  // ── LCL — notices non encore analysées ───────────────────────────────────
+  // ── LCL — notices non encore intégrées ───────────────────────────────────
   "LCL": {
     "Visa Classic / Bleue": tousNonAnalyses(),
     "Visa Premier": tousNonAnalyses(),
     "Mastercard Gold": tousNonAnalyses(),
   },
 
-  // ── CIC — notices non encore analysées ───────────────────────────────────
+  // ── CIC — notices non encore intégrées ───────────────────────────────────
   "CIC": {
     "Visa Classic / Bleue": tousNonAnalyses(),
     "Visa Premier": tousNonAnalyses(),
     "Mastercard Gold": tousNonAnalyses(),
   },
 
-  // ── Crédit Mutuel — notices non encore analysées ──────────────────────────
+  // ── Crédit Mutuel — notices non encore intégrées ──────────────────────────
   "Crédit Mutuel": {
     "Visa Classic / Bleue": tousNonAnalyses(),
     "Visa Premier": tousNonAnalyses(),
     "Mastercard Gold": tousNonAnalyses(),
   },
 
-  // ── BoursoBank — notices non encore analysées ─────────────────────────────
+  // ── BoursoBank — notices non encore intégrées ─────────────────────────────
   "BoursoBank": {
     "Visa Classic / Bleue": tousNonAnalyses(),
     "Visa Premier": tousNonAnalyses(),
     "Mastercard Gold": tousNonAnalyses(),
   },
 
-  // ── Hello Bank — notices non encore analysées ─────────────────────────────
+  // ── Hello Bank — notices non encore intégrées ─────────────────────────────
   "Hello Bank": {
+    "Visa Classic / Bleue": tousNonAnalyses(),
+    "Visa Premier": tousNonAnalyses(),
+    "Mastercard Gold": tousNonAnalyses(),
+  },
+
+  // ── Caisse d'Épargne — notices non encore intégrées ──────────────────────
+  "Caisse d'Épargne": {
+    "Visa Classic / Bleue": tousNonAnalyses(),
+    "Visa Premier": tousNonAnalyses(),
+    "Mastercard Gold": tousNonAnalyses(),
+  },
+
+  // ── Banque Populaire — notices non encore intégrées ───────────────────────
+  "Banque Populaire": {
+    "Visa Classic / Bleue": tousNonAnalyses(),
+    "Visa Premier": tousNonAnalyses(),
+    "Mastercard Gold": tousNonAnalyses(),
+  },
+
+  // ── Fortuneo — notices non encore intégrées ───────────────────────────────
+  "Fortuneo": {
     "Visa Classic / Bleue": tousNonAnalyses(),
     "Visa Premier": tousNonAnalyses(),
     "Mastercard Gold": tousNonAnalyses(),
@@ -253,8 +261,19 @@ export function getGarantie(
   carte: string,
   sinistre: TypeSinistre
 ): Garantie | null {
-  const garantie = garanties[banque]?.[carte]?.[sinistre];
-  return garantie ?? null;
+  return garanties[banque]?.[carte]?.[sinistre] ?? null;
+}
+
+/**
+ * Retourne le plafond max pour une combinaison banque/carte/sinistre.
+ * Retourne 0 si non trouvé ou non analysé.
+ */
+export function getPlafondMax(
+  banque: string,
+  carte: string,
+  sinistre: TypeSinistre
+): number {
+  return getGarantie(banque, carte, sinistre)?.plafond ?? 0;
 }
 
 /**
@@ -265,9 +284,9 @@ export function getBanquesDisponibles(): string[] {
 }
 
 /**
- * Retourne true si la garantie trouvée a été analysée
- * (plafond > 0 ou conditions différentes du placeholder).
+ * Retourne true si la garantie a été analysée
+ * (conditions différentes du placeholder).
  */
 export function isAnalysee(garantie: Garantie): boolean {
-  return garantie.conditions !== "Notice non encore analysée";
+  return garantie.conditions !== "Notice en cours d'intégration";
 }

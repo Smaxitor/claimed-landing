@@ -1,38 +1,8 @@
-import { useState } from "react";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setStatus("idle");
-
-    try {
-      const res = await fetch("/api/subscribe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      if (res.ok) {
-        setStatus("success");
-        setEmail("");
-      } else {
-        setStatus("error");
-      }
-    } catch {
-      setStatus("error");
-    } finally {
-      setLoading(false);
-    }
-  }
-
   return (
     <div className={`${inter.className} min-h-screen bg-white text-[#0A0A0A] flex flex-col`}>
 
@@ -56,40 +26,13 @@ export default function Home() {
           peut-être déjà tout ça. La plupart des gens ne le savent pas — et ne réclament jamais rien.
         </p>
 
-        {/* Form */}
-        <form
-          className="flex flex-col sm:flex-row gap-2 w-full max-w-md mb-3"
-          onSubmit={handleSubmit}
+        {/* CTA */}
+        <a
+          href="/qualification"
+          className="rounded-lg bg-[#0A0A0A] px-6 py-3 text-sm font-medium text-white hover:bg-[#222] transition-colors mb-3"
         >
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="votre@email.com"
-            className="flex-1 rounded-lg border border-[#E0E0E0] bg-white px-4 py-3 text-sm text-[#0A0A0A] placeholder-[#BDBDBD] focus:outline-none focus:border-[#0A0A0A] transition-colors disabled:opacity-50"
-            required
-            disabled={loading}
-          />
-          <button
-            type="submit"
-            disabled={loading}
-            className="rounded-lg bg-[#0A0A0A] px-5 py-3 text-sm font-medium text-white hover:bg-[#222] transition-colors whitespace-nowrap disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? "Envoi..." : "Je veux savoir →"}
-          </button>
-        </form>
-
-        {/* Feedback */}
-        {status === "success" && (
-          <p className="text-sm text-[#0A0A0A] font-medium mb-3">
-            Merci&nbsp;! On vous tient au courant.
-          </p>
-        )}
-        {status === "error" && (
-          <p className="text-sm text-red-500 mb-3">
-            Une erreur est survenue, réessayez.
-          </p>
-        )}
+          Vérifier mes garanties gratuitement →
+        </a>
 
         {/* Trust */}
         <p className="text-xs text-[#BDBDBD] mb-12">
