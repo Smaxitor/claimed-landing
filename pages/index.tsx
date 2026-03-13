@@ -44,9 +44,6 @@ export default function Home() {
       {/* Main */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-12 text-center">
 
-        {/* Card icon */}
-        <div className="text-4xl mb-8 select-none">💳</div>
-
         {/* Headline */}
         <h1 className="max-w-2xl text-4xl sm:text-5xl font-bold tracking-tight text-[#0A0A0A] mb-5">
           <span className="block leading-[1.05] mb-6">Votre carte bancaire cache des centaines d&apos;euros de garanties.</span>
