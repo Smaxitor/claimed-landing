@@ -86,10 +86,10 @@ function ChoiceButton({
     <button
       type="button"
       onClick={onClick}
-      className={`w-full text-left px-5 py-4 rounded-xl border text-sm font-medium transition-all ${
+      className={`w-full text-left px-5 py-4 rounded-xl border text-sm font-medium transition-colors duration-150 ${
         selected
           ? "border-[#0A0A0A] bg-[#0A0A0A] text-white"
-          : "border-[#E0E0E0] bg-white text-[#0A0A0A] hover:border-[#0A0A0A]"
+          : "border-[#E0E0E0] bg-white text-[#0A0A0A] hover:border-[#0A0A0A] hover:shadow-[inset_0_0_0_1px_#0A0A0A]"
       }`}
     >
       {label}
