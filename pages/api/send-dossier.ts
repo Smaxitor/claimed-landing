@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { Resend } from "resend";
 import { supabase } from "@/lib/supabaseClient";
-import { getGarantie, isAnalysee } from "@/lib/garanties";
+import { getGarantie, isAnalysee } from "@/lib/garanties-db";
 import { labelToSinistre, SINISTRE_LABELS_FR } from "@/lib/sinistreMapping";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const sinistreKey = labelToSinistre(sinistreLabel ?? "");
-  const garantie = sinistreKey ? getGarantie(banque, carte, sinistreKey) : null;
+  const garantie = sinistreKey ? await getGarantie(banque, carte, sinistreKey) : null;
   const sinistreFr = sinistreKey ? SINISTRE_LABELS_FR[sinistreKey] : (sinistreLabel ?? "");
 
   try {

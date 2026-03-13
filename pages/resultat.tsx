@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Inter } from "next/font/google";
-import { getGarantie, isAnalysee, TypeSinistre } from "@/lib/garanties";
+import { getGarantie, isAnalysee, TypeSinistre, Garantie } from "@/lib/garanties-db";
 import { labelToSinistre, SINISTRE_LABELS_FR } from "@/lib/sinistreMapping";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -41,6 +41,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 export default function Resultat() {
   const [qualification, setQualification] = useState<Qualification | null>(null);
   const [ready, setReady] = useState(false);
+  const [garantie, setGarantie] = useState<Garantie | null | undefined>(undefined);
   const [email, setEmail] = useState("");
   const [emailLoading, setEmailLoading] = useState(false);
   const [emailSubmitted, setEmailSubmitted] = useState(false);
@@ -58,7 +59,14 @@ export default function Resultat() {
     setReady(true);
   }, []);
 
-  if (!ready) {
+  useEffect(() => {
+    if (!qualification) { setGarantie(null); return; }
+    const key = labelToSinistre(qualification.sinistre);
+    if (!key) { setGarantie(null); return; }
+    getGarantie(qualification.banque, qualification.carte, key).then(setGarantie);
+  }, [qualification]);
+
+  if (!ready || (qualification !== null && garantie === undefined)) {
     return (
       <div className={`${inter.className} min-h-screen bg-white flex items-center justify-center`}>
         <span className="text-sm text-[#888]">Chargement…</span>
@@ -83,7 +91,6 @@ export default function Resultat() {
   const { sinistre: sinistreLabel, banque, carte, date, montant } = qualification;
   const montantNum = parseFloat(montant) || 0;
   const sinistreKey: TypeSinistre | null = labelToSinistre(sinistreLabel);
-  const garantie = sinistreKey ? getGarantie(banque, carte, sinistreKey) : null;
   const analyzed = garantie ? isAnalysee(garantie) : false;
 
   async function handleEmailSubmit(e: React.FormEvent) {
